@@ -50,7 +50,7 @@ for i in "${!depth[@]}";do
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/dataset/pill/test/crack/004.png \
+        --image_path /content/dataset/pill/test/scratch/004.png \
         --checkpoint_path ${save_dir}epoch_15.pth \
          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
     wait
