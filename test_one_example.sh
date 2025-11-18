@@ -48,7 +48,7 @@ for i in "${!depth[@]}";do
     for j in "${!n_ctx[@]}";do
     ## train on the VisA dataset
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=./checkpoints_mul/${base_dir}/
+        save_dir=/content/AnomalyCLIP/checkpoints_mul/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
         --image_path /content/dataset/pill/test/crack/004.png \
         --checkpoint_path ${save_dir}epoch_15.pth \
