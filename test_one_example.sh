@@ -39,6 +39,23 @@ device=0
 # done
 
 
+# LOG=${save_dir}"res.log"
+# echo ${LOG}
+# depth=(9)
+# n_ctx=(12)
+# t_n_ctx=(4)
+# for i in "${!depth[@]}";do
+#     for j in "${!n_ctx[@]}";do
+#     ## train on the VisA dataset
+#         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
+#         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+#         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
+#         --image_path /content/dataset/pill/train/good/001.png \
+#         --checkpoint_path ${save_dir}epoch_15.pth \
+#          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
+#     wait
+#     done
+# done
 LOG=${save_dir}"res.log"
 echo ${LOG}
 depth=(9)
@@ -50,45 +67,45 @@ for i in "${!depth[@]}";do
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/dataset/pill/train/good/001.png \
+        --image_path /image.jpg \
         --checkpoint_path ${save_dir}epoch_15.pth \
          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
     wait
     done
 done
-for i in "${!depth[@]}";do
-    for j in "${!n_ctx[@]}";do
-    ## train on the VisA dataset
-        base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
-        CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/dataset/pill/train/good/002.png \
-        --checkpoint_path ${save_dir}epoch_15.pth \
-         --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
-    wait
-    done
-done
-for i in "${!depth[@]}";do
-    for j in "${!n_ctx[@]}";do
-    ## train on the VisA dataset
-        base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
-        CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/dataset/pill/train/good/003.png \
-        --checkpoint_path ${save_dir}epoch_15.pth \
-         --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
-    wait
-    done
-done
-for i in "${!depth[@]}";do
-    for j in "${!n_ctx[@]}";do
-    ## train on the VisA dataset
-        base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
-        CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/dataset/pill/train/good/004.png \
-        --checkpoint_path ${save_dir}epoch_15.pth \
-         --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
-    wait
-    done
-done
+# for i in "${!depth[@]}";do
+#     for j in "${!n_ctx[@]}";do
+#     ## train on the VisA dataset
+#         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
+#         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+#         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
+#         --image_path /content/dataset/pill/train/good/002.png \
+#         --checkpoint_path ${save_dir}epoch_15.pth \
+#          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
+#     wait
+#     done
+# done
+# for i in "${!depth[@]}";do
+#     for j in "${!n_ctx[@]}";do
+#     ## train on the VisA dataset
+#         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
+#         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+#         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
+#         --image_path /content/dataset/pill/train/good/003.png \
+#         --checkpoint_path ${save_dir}epoch_15.pth \
+#          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
+#     wait
+#     done
+# done
+# for i in "${!depth[@]}";do
+#     for j in "${!n_ctx[@]}";do
+#     ## train on the VisA dataset
+#         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
+#         save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+#         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
+#         --image_path /content/dataset/pill/train/good/004.png \
+#         --checkpoint_path ${save_dir}epoch_15.pth \
+#          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
+#     wait
+#     done
+# done
