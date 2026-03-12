@@ -9,9 +9,9 @@ for i in "${!depth[@]}";do
     for j in "${!n_ctx[@]}";do
     ## train on the VisA dataset
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+        save_dir=checkpoints/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/inline_0.png \
+        --image_path images/inline_0.png \
         --checkpoint_path ${save_dir}epoch_15.pth \
          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
     wait
@@ -26,9 +26,9 @@ for i in "${!depth[@]}";do
     for j in "${!n_ctx[@]}";do
     ## train on the VisA dataset
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+        save_dir=checkpoints/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/inline_1.png \
+        --image_path images/inline_1.png \
         --checkpoint_path ${save_dir}epoch_15.pth \
          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
     wait
@@ -43,9 +43,9 @@ for i in "${!depth[@]}";do
     for j in "${!n_ctx[@]}";do
     ## train on the VisA dataset
         base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_multiscale
-        save_dir=/content/AnomalyCLIP/checkpoints/${base_dir}/
+        save_dir=checkpoints/${base_dir}/
         CUDA_VISIBLE_DEVICES=${device} python test_one_example.py \
-        --image_path /content/inline_2.png \
+        --image_path images/inline_2.png \
         --checkpoint_path ${save_dir}epoch_15.pth \
          --features_list 6 12 18 24 --image_size 518 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]}
     wait

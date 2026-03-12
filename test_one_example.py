@@ -46,8 +46,16 @@ def test(args):
     features_list = args.features_list
     image_path = args.image_path
 
+    import os, sys
+    print(f"--- [DEBUG] sys.executable: {sys.executable} ---")
+    print(f"--- [DEBUG] torch.__version__: {torch.__version__} ---")
+    print(f"--- [DEBUG] torch.version.cuda: {torch.version.cuda} ---")
+    print(f"--- [DEBUG] CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES')} ---")
+    print(f"--- [DEBUG] torch.cuda.is_available(): {torch.cuda.is_available()} ---")
+    print(f"--- [DEBUG] torch.cuda.device_count(): {torch.cuda.device_count()} ---")
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
+    print(f"--- [INFO] Using device: {device} ---")
     AnomalyCLIP_parameters = {"Prompt_length": args.n_ctx, "learnabel_text_embedding_depth": args.depth, "learnabel_text_embedding_length": args.t_n_ctx}
     
     model, _ = AnomalyCLIP_lib.load("ViT-L/14@336px", device=device, design_details = AnomalyCLIP_parameters)
@@ -57,7 +65,8 @@ def test(args):
 
 
     prompt_learner = AnomalyCLIP_PromptLearner(model.to("cpu"), AnomalyCLIP_parameters)
-    checkpoint = torch.load(args.checkpoint_path)
+    #checkpoint = torch.load(args.checkpoint_path, map_location=torch.device('cpu'))
+    checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
     prompt_learner.load_state_dict(checkpoint["prompt_learner"])
     prompt_learner.to(device)
     model.to(device)
