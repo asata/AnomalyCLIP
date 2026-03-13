@@ -4,6 +4,7 @@ import argparse
 import torch.nn.functional as F
 from prompt_ensemble import AnomalyCLIP_PromptLearner
 from PIL import Image
+import time
 
 import os
 import random
@@ -58,35 +59,50 @@ def test(args):
     print(f"--- [INFO] Using device: {device} ---")
     AnomalyCLIP_parameters = {"Prompt_length": args.n_ctx, "learnabel_text_embedding_depth": args.depth, "learnabel_text_embedding_length": args.t_n_ctx}
     
+    timings = {}
+
+    # Step 1: Model Loading
+    start_model = time.time()
     model, _ = AnomalyCLIP_lib.load("ViT-L/14@336px", device=device, design_details = AnomalyCLIP_parameters)
     model.eval()
 
-    preprocess, target_transform = get_transform(args)
-
-
     prompt_learner = AnomalyCLIP_PromptLearner(model.to("cpu"), AnomalyCLIP_parameters)
-    #checkpoint = torch.load(args.checkpoint_path, map_location=torch.device('cpu'))
     checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
     prompt_learner.load_state_dict(checkpoint["prompt_learner"])
     prompt_learner.to(device)
     model.to(device)
     model.visual.DAPM_replace(DPAM_layer = 20)
+    if device == "cuda": torch.cuda.synchronize()
+    timings['Model Loading'] = time.time() - start_model
 
+    # Step 2: Text Processing
+    start_text = time.time()
     prompts, tokenized_prompts, compound_prompts_text = prompt_learner(cls_id = None)
     text_features = model.encode_text_learn(prompts, tokenized_prompts, compound_prompts_text).float()
-    text_features = torch.stack(torch.chunk(text_features, dim = 0, chunks = 2), dim = 1)
     text_features = text_features/text_features.norm(dim=-1, keepdim=True)
+    text_features = torch.stack(torch.chunk(text_features, dim = 0, chunks = 2), dim = 1)
+    if device == "cuda": torch.cuda.synchronize()
+    timings['Text Processing'] = time.time() - start_text
 
+    # Step 3: Image Preprocessing
+    start_pre = time.time()
+    preprocess, target_transform = get_transform(args)
     img = Image.open(image_path)
     img = preprocess(img)
-    
-    print("img", img.shape)
     image = img.reshape(1, 3, img_size, img_size).to(device)
+    if device == "cuda": torch.cuda.synchronize()
+    timings['Image Preprocessing'] = time.time() - start_pre
    
     with torch.no_grad():
+        # Step 4: Model Inference
+        start_inf = time.time()
         image_features, patch_features = model.encode_image(image, features_list, DPAM_layer = 20)
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+        if device == "cuda": torch.cuda.synchronize()
+        timings['Model Inference'] = time.time() - start_inf
 
+        # Step 5: Post-Processing & Visualization
+        start_post = time.time()
         text_probs = image_features @ text_features.permute(0, 2, 1)
         text_probs = (text_probs/0.07).softmax(-1)
         text_probs = text_probs[:, 0, 1]
@@ -100,12 +116,23 @@ def test(args):
                 anomaly_map_list.append(anomaly_map)
 
         anomaly_map = torch.stack(anomaly_map_list)
-        
         anomaly_map = anomaly_map.sum(dim = 0)
-      
         anomaly_map = torch.stack([torch.from_numpy(gaussian_filter(i, sigma = args.sigma)) for i in anomaly_map.detach().cpu()], dim = 0 )
 
         visualizer(image_path, anomaly_map.detach().cpu().numpy(), args.image_size)
+        if device == "cuda": torch.cuda.synchronize()
+        timings['Post-Processing'] = time.time() - start_post
+
+    print("\n" + "="*30)
+    print("   Execution Time Report")
+    print("="*30)
+    total_time = 0
+    for step, duration in timings.items():
+        print(f"{step:25}: {duration:.4f}s")
+        total_time += duration
+    print("-" * 30)
+    print(f"{'Total Execution Time':25}: {total_time:.4f}s")
+    print("="*30 + "\n")
 
 
 if __name__ == '__main__':

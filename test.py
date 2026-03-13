@@ -64,7 +64,8 @@ def test(args):
         metrics[obj]['image-ap'] = 0
 
     prompt_learner = AnomalyCLIP_PromptLearner(model.to("cpu"), AnomalyCLIP_parameters)
-    checkpoint = torch.load(args.checkpoint_path)
+    # checkpoint = torch.load(args.checkpoint_path)
+    checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
     prompt_learner.load_state_dict(checkpoint["prompt_learner"])
     prompt_learner.to(device)
     model.to(device)
